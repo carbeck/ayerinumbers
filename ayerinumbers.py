@@ -1,8 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-''' ayerinumbers.py -- Converts numbers to Ayeri number words
-'''
+''' ayerinumbers.py -- Converts numbers to Ayeri number words '''
 
 # Copyleft 2015 Carsten Becker <carbeck@gmail.com>
 #
@@ -23,6 +22,7 @@ import argparse
 import math
 import sys
 
+'''Morphemes for the powers (10^1)₁₂ to (10^40)₁₂'''
 pword = {
     1: 'lan',           #  1    element
     2: 'menang',        #  2    elements
@@ -38,6 +38,7 @@ pword = {
     40:'tamang',        # 21-22 elements
 }
 
+'''The number words for the numbers 0...B'''
 nword = {
     '0':'ja',
     '1':'men',
@@ -53,9 +54,12 @@ nword = {
     'B':'tam',
 }
 
+'''Assign keys from nword to pword on the fly. We need this to generate
+   morphemes for powers beyond 'tamang'.'''
 pnword = {}
-for i, x in enumerate([pword[i] for i in sorted(pword)]):
-    pnword[str(i+1)] = x
+for i, x in zip(sorted(nword), [pword[i] for i in sorted(pword)]):
+    pnword[i] = x
+pnword['0'] = 'lanang'
 
 def c(n):
     '''Convert number > 9 to a string ABCDE…'''
@@ -73,23 +77,41 @@ def baseconv(n, b = 12):
         s = str(c(r)) + str(s)
     return s
 
-def numword_bigram(n):
+def numword_bigram(n, pn = 'nword'):
     '''Take a number bigram (str!) and return the corresponding number word.'''
     
     # Instantiate empty string as a container
     s = ''
     
+    # Single digit
     if len(n) < 2:
-        if n[0] != '0':
+        
+        # Digit is 1...B and we're using regular number words
+        if n[0] != '0' and pn == 'nword':
             s = '{}'.format(nword[n[0]])
+            
+        # Digit is 1...B and we're using power words
+        elif n[0] != '0' and pn == 'pnword':
+            s = '{}'.format(pnword[n[0]])
+        
+    # Two digits
     else:
+        
+        # Digits 10...BB
         if n[0] != '0':
             s = '{}{} '.format(nword[n[0]], pword[1])
+        
+        # Digits 01...0B
         elif n[0] == '0' and n[1] != '0':
             s = 'nay '
         
-        if n[1] != '0':
+        # Last digit is not 0 and we're using regular number words
+        if n[1] != '0' and pn == 'nword':
             s += '{}'.format(nword[n[1]])
+        
+        # Last digit is not 0 and we're using power words
+        elif n[1] != '0' and pn == 'pnword':
+            s += '{}'.format(pnword[n[1]])
     
     return s.strip()
 
@@ -161,7 +183,7 @@ def numberword(n):
     return ' '.join(filter(None, s))
 
 def main(argv=None):
-    """Main function providing command line option parser and file I/O."""
+    """Main function providing command line option parser."""
     if argv is None:
         argv = sys.argv[1:]
 
