@@ -69,7 +69,6 @@ def c(n):
 
 def baseconv(n, b = 12):
     '''Convert an integer number n in base 10 to another'''
-    n = int(math.floor(float(n)))
     s = ''
     while n > 0:
         r = n % b       # remainder
@@ -121,13 +120,21 @@ def numword_bigram(n, pn = 'nword'):
 
 def rsplit_str(s, i):
     '''Splits string after i digits from the back'''
+    
+    # Containers
     chars = ''
     spl = []
+    
+    # Calculate the modulo the last index results in for the length of the group
+    # 12345, split into groups of max. 3 => last index: 4, 4 % 3 = 1
+    m = (len(s) - 1) % i
+    
     for n, char in enumerate(s):
         chars += char;
-        if n % i == (len(s) - 1) % i:
+        if n % i == m:
             spl.append(chars);
             chars = ''
+    
     return spl
 
 def split_num(s):
@@ -150,10 +157,15 @@ def get_power(i):
     '''Gets the word for the respective power from number of elements'''
     pow = i * 2 - 2
     
+    # In case it's already readily defined
     if pow in pword:
         return pword[pow]
     
+    # In case it's not already defined
     elif pow not in pword and pow < max(pword):
+        
+        # Iterate through all the power words until one bigger than the input 
+        # is found, use the previous one then.
         flag = True
         p = 0
         while flag:
@@ -206,12 +218,18 @@ def main(argv=None):
     # Parser for command line options
     parser = argparse.ArgumentParser(description=
         "Converts numbers to Ayeri number words.")
-    parser.add_argument('n', type=str, help='''An integer number between 0 and
-        (10^40)₁₂''')
-    
+    parser.add_argument('n', type=int, help='''an integer number >= 0''')
+    parser.add_argument('-s', '--show-conversion', action='store_const', 
+        const=True, default=False, help='''show the conversion into base 12'''),
     args = parser.parse_args(argv)
     
-    return '{}₁₂: {}'.format(baseconv(args.n), numberword(baseconv(args.n)))
+    # Return string
+    s = ''
+    if args.show_conversion:
+        s += '{}₁₂: '.format(baseconv(args.n))
+    s += '{}'.format(numberword(baseconv(args.n)))
+    
+    return s
 
 if __name__ == '__main__':
     sys.exit(main())
