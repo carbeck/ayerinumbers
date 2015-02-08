@@ -219,7 +219,7 @@ def numberword(n, pn = 'nword'):
             n[i][0] = n[i][0][1]
         
         # Some fixing: [['00', '01'], [...]] -> [['00', '1'], ...]
-        if i < len(n) - 1 and len(n[i]) > 1 and n[i][1] in sd:
+        if i < len(n) - 1 and len(n[i]) > 1 and n[i][0] == '00' and n[i][1] in sd:
             n[i][1] = n[i][1][1]
         
         # Get the word for power of the element in the group
