@@ -97,11 +97,15 @@ def numword_bigram(n, pn = 'nword'):
     # Two digits
     else:
         
-        # Digits 10...BB
-        if n[0] != '0':
+        # Digits 10, 20, 30, ..., B0
+        if n[0] != '0' and n[1] == '0':
             s = '{}{} '.format(nword[n[0]], pword[1])
         
-        # Digits 01...0B
+        # Digits 11, 12, 13, ..., 21, 22, 23, ..., B1, B2, B3, ...
+        elif n[0] != '0' and n[1] != '0':
+            s = '{}{}-'.format(nword[n[0]], pword[1])
+        
+        # Digits 01, 02, ..., 0B
         elif n[0] == '0' and n[1] != '0':
             s = 'nay '
         
@@ -115,15 +119,26 @@ def numword_bigram(n, pn = 'nword'):
     
     return s.strip()
 
+def rsplit_str(s, i):
+    '''Splits string after i digits from the back'''
+    chars = ''
+    spl = []
+    for n, char in enumerate(s):
+        chars += char;
+        if n %i == (len(s)-1) % i:
+            spl.append(chars);
+            chars = ''
+    return spl
+
 def split_num(s):
     '''Split into list with the format [[00,00],[00,00], ...]'''
     
     # Splitting into groups of 4
-    sp = " ".join(s[::-1][i:i+4] for i in range(0,len(s), 4))[::-1].split()
+    sp = rsplit_str(s, 4)
 
     # Splitting into subgroups of 2
-    for i,n in enumerate(sp):
-        sp[i] = " ".join(n[::-1][i:i+2] for i in range(0,len(n), 2))[::-1].split()
+    for i, n in enumerate(sp):
+        sp[i] = rsplit_str(n, 2)
     
     return sp
 
@@ -166,6 +181,11 @@ def numberword(n):
     
     # Split the number up into myriads and hundreds
     n = split_num(n)
+    
+    '''FIXME
+        THIS TOTALLY IGNORES THAT YOU CAN HAVE LIKE 
+        KAYNANG X, SAMANG MENANG Y-LAN Z, MENANG V-LAN W and such
+    '''
     
     # The highest power word
     if count_elements(n) > 2:
