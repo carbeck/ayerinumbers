@@ -24,7 +24,6 @@ import sys
 
 '''Morphemes for the powers (10^1)₁₂ to (10^40)₁₂'''
 pword = {
-    0: '',
     1: 'lan',           #  1    element
     2: 'menang',        #  2    elements
     4: 'samang',        #  3- 4 elements
@@ -197,9 +196,6 @@ def numberword(n):
         for j, hungrp in enumerate(n[i]):
             s.append(numword_bigram(n[i][j]))
         
-        if i < len(n) - 1:
-            s[-1]+= ','
-        
     return ' '.join(filter(None, s))
 
 def main(argv=None):
@@ -211,11 +207,11 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=
         "Converts numbers to Ayeri number words.")
     parser.add_argument('n', type=str, help='''An integer number between 0 and
-        14,697,715,679,690,864,505,827,555,550,150,426,126,974,976''')
+        (10^40)₁₂''')
     
     args = parser.parse_args(argv)
     
-    return '{}: {}'.format(baseconv(args.n), numberword(baseconv(args.n)))
+    return '{}₁₂: {}'.format(baseconv(args.n), numberword(baseconv(args.n)))
 
 if __name__ == '__main__':
     sys.exit(main())
