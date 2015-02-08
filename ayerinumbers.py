@@ -36,7 +36,6 @@ pword = {
     32:'veyanang',      # 17-18 elements
     36:'malnang',       # 19-20 elements
     40:'tamang',        # 21-22 elements
-    44:'menlanang',     # FIXME
 }
 
 '''The number words for the numbers 0...B'''
@@ -167,10 +166,11 @@ def get_power(i):
 
     # If power word exceeds the hard-coded ones, generate one on the fly
     if pow > max(pword):
-        return numberword(baseconv((math.ceil(i/2)*2 - 1) // 2 + 1), 'pnword')
+        x = numberword(baseconv((math.ceil(i/2)*2 - 1) // 2 + 1), 'pnword')
+        return x
     
     # In case it's already readily defined
-    if pow in pword:
+    elif pow in pword:
         return pword[pow]
     
     # In case it's not already defined
@@ -207,7 +207,7 @@ def numberword(n, pn = 'nword'):
     n = split_num(n)
     
     for i, myrgrp in enumerate(n):
-        
+
         # The power word for the current group, avoid *menang menang
         if i < len(n) - 1 and n[i] != ['00', '00']:
             s.append(get_power((len(n) - i) * 2))
