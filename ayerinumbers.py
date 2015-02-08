@@ -22,7 +22,7 @@ import argparse
 import math
 import sys
 
-'''Morphemes for the powers (10^1)₁₂ to (10^40)₁₂'''
+'''Morphemes for the powers 12^1 to 12^44'''
 pword = {
     1: 'lan',           #  1    element
     2: 'menang',        #  2    elements
@@ -36,6 +36,7 @@ pword = {
     32:'veyanang',      # 17-18 elements
     36:'malnang',       # 19-20 elements
     40:'tamang',        # 21-22 elements
+    44:'FIXME',         # FIXME
 }
 
 '''The number words for the numbers 0...B'''
@@ -156,13 +157,17 @@ def count_elements(l):
 def get_power(i):
     '''Gets the word for the respective power from number of elements'''
     pow = i * 2 - 2
+
+    # FIXME: Hard-limiting range until dynamic generation of power words is done
+    if pow > max(pword):
+        sys.exit("Number too large.")
     
     # In case it's already readily defined
     if pow in pword:
         return pword[pow]
     
     # In case it's not already defined
-    elif pow not in pword and pow < max(pword):
+    elif pow not in pword:
         
         # Iterate through all the power words until one bigger than the input 
         # is found, use the previous one then.
@@ -218,7 +223,7 @@ def main(argv=None):
     # Parser for command line options
     parser = argparse.ArgumentParser(description=
         "Converts numbers to Ayeri number words.")
-    parser.add_argument('n', type=int, help='''an integer number >= 0''')
+    parser.add_argument('n', type=int, help='''an integer number 0 <= n < 12^44''')
     parser.add_argument('-s', '--show-conversion', action='store_const', 
         const=True, default=False, help='''show the conversion into base 12'''),
     args = parser.parse_args(argv)

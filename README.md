@@ -9,7 +9,7 @@ Executing the Script
 You'll need Python 3 for this. Note that this is a *command-line program*. `python ayerinumbers.py -h` gives you some advice on the input:
 
     positional arguments:
-      n                     an integer number n >= 0
+      n                     an integer number 0 <= n < 12^44
 
     optional arguments:
       -h, --help            show this help message and exit
