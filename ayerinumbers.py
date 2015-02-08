@@ -36,7 +36,7 @@ pword = {
     32:'veyanang',      # 17-18 elements
     36:'malnang',       # 19-20 elements
     40:'tamang',        # 21-22 elements
-    44:'FIXME',         # FIXME
+    44:'menlanang',     # FIXME
 }
 
 '''The number words for the numbers 0...B'''
@@ -77,6 +77,9 @@ def baseconv(n, b = 12):
         s = str(c(r)) + str(s)
     return s
 
+'''List of numbers 01…0A'''
+sd = ['0'+baseconv(i) for i in range(1,12)]
+
 def numword_bigram(n, pn = 'nword'):
     '''Take a number bigram (str!) and return the corresponding number word.'''
     
@@ -97,9 +100,13 @@ def numword_bigram(n, pn = 'nword'):
     # Two digits
     else:
         
-        # Digits 10, 20, 30, ..., B0
-        if n[0] != '0' and n[1] == '0':
+        # Digits 10, 20, 30, ..., B0 and we're using regular number words
+        if n[0] != '0' and n[1] == '0' and pn == 'nword':
             s = '{}{} '.format(nword[n[0]], pword[1])
+        
+        # Digits 10, 20, 30, ..., B0 and we're using power words
+        elif n[0] != '0' and n[1] == '0' and pn == 'pnword':
+            s = '{}{} '.format(nword[n[0]], pnword['0'])
         
         # Digits 11, 12, 13, ..., 21, 22, 23, ..., B1, B2, B3, ...
         elif n[0] != '0' and n[1] != '0':
@@ -139,7 +146,7 @@ def rsplit_str(s, i):
     return spl
 
 def split_num(s):
-    '''Split into list with the format [[00,00],[00,00], ...]'''
+    '''Split into list with the format [['00','00'],['00','00'], ...]'''
     
     # Splitting into groups of 4
     sp = rsplit_str(s, 4)
@@ -147,7 +154,7 @@ def split_num(s):
     # Splitting into subgroups of 2
     for i, n in enumerate(sp):
         sp[i] = rsplit_str(n, 2)
-    
+        
     return sp
 
 def count_elements(l):
@@ -156,11 +163,11 @@ def count_elements(l):
 
 def get_power(i):
     '''Gets the word for the respective power from number of elements'''
-    pow = i * 2 - 2
+    pow = 2 * i - 2
 
-    # FIXME: Hard-limiting range until dynamic generation of power words is done
+    # If power word exceeds the hard-coded ones, generate one on the fly
     if pow > max(pword):
-        sys.exit("Number too large.")
+        return numberword(baseconv((math.ceil(i/2)*2 - 1) // 2 + 1), 'pnword')
     
     # In case it's already readily defined
     if pow in pword:
@@ -181,7 +188,7 @@ def get_power(i):
                     p = x
         return pword[p]
 
-def numberword(n):
+def numberword(n, pn = 'nword'):
     '''The function to form the number word.'''
     
     # Make n a string if it's not yet provided as such
@@ -202,8 +209,16 @@ def numberword(n):
     for i, myrgrp in enumerate(n):
         
         # The power word for the current group, avoid *menang menang
-        if i < len(n) - 1:
+        if i < len(n) - 1 and n[i] != ['00', '00']:
             s.append(get_power((len(n) - i) * 2))
+        
+        # Some fixing: [['01', ...]] -> [['1', ...]]
+        if len(n[i]) > 1 and n[i][0] in sd:
+            n[i][0] = n[i][0][1]
+        
+        # Some fixing: [['00', '01'], [...]] -> [['00', '1'], ...]
+        if i < len(n) - 1 and len(n[i]) > 1 and n[i][1] in sd:
+            n[i][1] = n[i][1][1]
         
         # Get the word for power of the element in the group
         if len(n[i]) > 1 and n[i][0] != '00':
@@ -211,7 +226,7 @@ def numberword(n):
         
         # For each group of hundreds, get the number word
         for j, hungrp in enumerate(n[i]):
-            s.append(numword_bigram(n[i][j]))
+            s.append(numword_bigram(n[i][j], pn))
         
     return ' '.join(filter(None, s))
 
