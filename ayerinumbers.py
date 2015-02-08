@@ -174,7 +174,7 @@ def get_power(i):
         return pword[pow]
     
     # In case it's not already defined
-    elif pow not in pword:
+    elif pow not in pword and pow <= max(pword):
         
         # Iterate through all the power words until one bigger than the input 
         # is found, use the previous one then.
@@ -187,6 +187,8 @@ def get_power(i):
                 else:
                     p = x
         return pword[p]
+    else:
+        return False
 
 def numberword(n, pn = 'nword'):
     '''The function to form the number word.'''
@@ -226,7 +228,10 @@ def numberword(n, pn = 'nword'):
         
         # For each group of hundreds, get the number word
         for j, hungrp in enumerate(n[i]):
-            s.append(numword_bigram(n[i][j], pn))
+            if j == len(n[i]) - 1 and pn == 'pnword':
+                s.append(numword_bigram(n[i][j], 'pnword'))
+            else:
+                s.append(numword_bigram(n[i][j]))
         
     return ' '.join(filter(None, s))
 
