@@ -24,6 +24,7 @@ import sys
 
 '''Morphemes for the powers (10^1)₁₂ to (10^40)₁₂'''
 pword = {
+    0: '',
     1: 'lan',           #  1    element
     2: 'menang',        #  2    elements
     4: 'samang',        #  3- 4 elements
@@ -125,7 +126,7 @@ def rsplit_str(s, i):
     spl = []
     for n, char in enumerate(s):
         chars += char;
-        if n %i == (len(s)-1) % i:
+        if n % i == (len(s) - 1) % i:
             spl.append(chars);
             chars = ''
     return spl
@@ -182,16 +183,12 @@ def numberword(n):
     # Split the number up into myriads and hundreds
     n = split_num(n)
     
-    '''FIXME
-        THIS TOTALLY IGNORES THAT YOU CAN HAVE LIKE 
-        KAYNANG X, SAMANG MENANG Y-LAN Z, MENANG V-LAN W and such
-    '''
-    
-    # The highest power word
-    if count_elements(n) > 2:
-        s.append(get_power(count_elements(n)))
-    
     for i, myrgrp in enumerate(n):
+        
+        # The power word for the current group, avoid *menang menang
+        if i < len(n) - 1:
+            s.append(get_power((len(n) - i) * 2))
+        
         # Get the word for power of the element in the group
         if len(n[i]) > 1 and n[i][0] != '00':
             s.append(get_power(len(n[i])))
@@ -199,7 +196,10 @@ def numberword(n):
         # For each group of hundreds, get the number word
         for j, hungrp in enumerate(n[i]):
             s.append(numword_bigram(n[i][j]))
-    
+        
+        if i < len(n) - 1:
+            s[-1]+= ','
+        
     return ' '.join(filter(None, s))
 
 def main(argv=None):
