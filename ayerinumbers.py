@@ -181,7 +181,7 @@ def get_power(i):
         flag = True
         p = 0
         while flag:
-            for x in sorted([n for n in pword]):
+            for x in sorted(list(pword)):
                 if x > pow:
                     flag = False
                 else:
