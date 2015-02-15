@@ -178,14 +178,12 @@ def get_power(i):
         
         # Iterate through all the power words until one bigger than the input 
         # is found, use the previous one then.
-        flag = True
         p = 0
-        while flag:
-            for x in sorted(list(pword)):
-                if x > pow:
-                    flag = False
-                else:
-                    p = x
+        for x in sorted(list(pword)):
+            if x > pow:
+                break
+            else:
+                p = x
         return pword[p]
     else:
         return False
@@ -251,7 +249,7 @@ def main(argv=None):
     # Return string
     s = ''
     if args.show_conversion:
-        s += '{}₁₂: '.format(baseconv(args.n))
+        s += '{}₁₂: '.format(",".join(rsplit_str(baseconv(args.n),4)))
     s += '{}'.format(numberword(baseconv(args.n)))
     
     return s
