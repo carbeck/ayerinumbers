@@ -15,7 +15,7 @@ You'll need Python 3 for this. Note that this is a *command-line program*. `pyth
       -h, --help            show this help message and exit
       -s, --show-conversion show the conversion into base 12
       
-You may need to call the python script either by prefixing `python` or `python3`,
+You may need to call the python script by prefixing either `python` or `python3`,
 or make it executable e.g. by `cd`ing to the directory the file is in, and then 
 doing `chmod +x ayerinumbers.py`. You should then be able to just start the 
 program with `./ayerinumbers.py`.
