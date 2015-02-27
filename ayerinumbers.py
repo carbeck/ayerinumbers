@@ -69,6 +69,9 @@ def c(n):
 
 def baseconv(n, b = 12):
     '''Convert an integer number n in base 10 to another'''
+    if n == 0:
+        return str(n)
+    
     s = ''
     while n > 0:
         r = n % b       # remainder
